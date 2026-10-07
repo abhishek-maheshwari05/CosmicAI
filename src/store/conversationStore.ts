@@ -12,7 +12,6 @@ type LoadState = 'idle' | 'loading' | 'ready' | 'error';
  */
 interface ConversationState {
   loadState: LoadState;
-  error?: string;
   ids: string[];
   byId: Record<string, Message>;
   isAiTyping: boolean;
@@ -60,7 +59,7 @@ export const useConversationStore = create<ConversationState>((set, get) => {
     replyingToId: null,
 
     load: async () => {
-      set({ loadState: 'loading', error: undefined });
+      set({ loadState: 'loading' });
       try {
         const messages = await api.fetchConversation();
         set({
@@ -68,8 +67,8 @@ export const useConversationStore = create<ConversationState>((set, get) => {
           ids: messages.map(m => m.id),
           byId: Object.fromEntries(messages.map(m => [m.id, m])),
         });
-      } catch (e) {
-        set({ loadState: 'error', error: (e as Error).message });
+      } catch {
+        set({ loadState: 'error' });
       }
     },
 

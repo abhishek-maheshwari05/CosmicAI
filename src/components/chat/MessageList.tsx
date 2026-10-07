@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { FlatList, type ListRenderItem, type NativeScrollEvent, type NativeSyntheticEvent, StyleSheet, Text } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { ChevronDown } from 'lucide-react-native';
+import { FlatList, type ListRenderItem, type NativeScrollEvent, type NativeSyntheticEvent, StyleSheet } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { motion } from '../../theme/motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useConversationStore } from '../../store/conversationStore';
 import { colors, radius, spacing } from '../../theme';
@@ -69,12 +71,12 @@ export function MessageList() {
         windowSize={11}
       />
       {showJump ? (
-        <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.jumpWrap}>
+        <Animated.View entering={motion.fadeIn} exiting={motion.fadeOut} style={styles.jumpWrap}>
           <PressableScale
             style={styles.jump}
             onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
             accessibilityLabel="Scroll to latest message">
-            <Text style={styles.jumpText}>↓</Text>
+            <ChevronDown size={20} color={colors.text} strokeWidth={2} />
           </PressableScale>
         </Animated.View>
       ) : null}
@@ -83,7 +85,7 @@ export function MessageList() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingVertical: spacing.md },
+  content: { paddingTop: spacing.lg, paddingBottom: spacing.sm },
   jumpWrap: { position: 'absolute', right: spacing.lg, bottom: spacing.lg },
   jump: {
     width: 40,
@@ -91,9 +93,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderStrong,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  jumpText: { color: colors.text, fontSize: 18 },
 });

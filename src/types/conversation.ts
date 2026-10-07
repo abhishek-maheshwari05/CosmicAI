@@ -25,7 +25,6 @@ export interface Recommendation {
   type: string;
   title: string;
   subtitle?: string;
-  imageUrl?: string;
   /** CTA override coming from the backend, e.g. "Book now". */
   ctaLabel?: string;
   /** Free-form, type-specific data (price, duration, deeplink, ...). */

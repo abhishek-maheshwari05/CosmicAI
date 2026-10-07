@@ -10,5 +10,3 @@ export function registerRecommendation(def: RecommendationDefinition) {
 }
 
 export const getRecommendationDefinition = (type: string) => registry.get(type);
-
-export const registeredRecommendationTypes = () => [...registry.keys()];

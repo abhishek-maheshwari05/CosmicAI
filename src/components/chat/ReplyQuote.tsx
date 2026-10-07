@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useMessage } from '../../store/conversationStore';
-import { colors, radius, spacing } from '../../theme';
+import { radius, spacing, type } from '../../theme';
 import { senderLabel } from './senderMeta';
 
-/** Quoted message shown inside a bubble that replies to another message. */
+/** Quoted message shown inside a message that replies to another one. */
 export function ReplyQuote({ messageId }: { messageId: string }) {
   const original = useMessage(messageId);
   return (
@@ -19,14 +19,14 @@ export function ReplyQuote({ messageId }: { messageId: string }) {
 
 const styles = StyleSheet.create({
   quote: {
-    borderLeftWidth: 3,
-    borderLeftColor: colors.gold,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderLeftWidth: 2,
+    borderLeftColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.18)',
     borderRadius: radius.sm,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    paddingVertical: 5,
     marginBottom: 6,
   },
-  author: { color: colors.gold, fontSize: 12, fontWeight: '600' },
-  text: { color: colors.textMuted, fontSize: 12 },
+  author: { ...type.micro, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
+  text: { ...type.caption, color: 'rgba(255,255,255,0.65)', marginTop: 1 },
 });

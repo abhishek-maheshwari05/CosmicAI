@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react';
  * Screen-level interactions that rows need but shouldn't receive as props
  * (props would break memoisation of renderItem and couple rows to the screen).
  */
-export interface MessageActions {
+interface MessageActions {
   openActions: (id: string) => void;
 }
 

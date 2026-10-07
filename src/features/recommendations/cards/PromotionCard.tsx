@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../../theme';
+import { colors, spacing } from '../../../theme';
 import type { RecommendationCardProps } from '../types';
 import { BaseRecommendationCard } from './BaseRecommendationCard';
 
@@ -9,7 +9,7 @@ export function PromotionCard(props: RecommendationCardProps) {
   return (
     <BaseRecommendationCard {...props}>
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>LIMITED TIME</Text>
+        <Text style={styles.badgeText}>Limited time</Text>
       </View>
     </BaseRecommendationCard>
   );
@@ -18,11 +18,11 @@ export function PromotionCard(props: RecommendationCardProps) {
 const styles = StyleSheet.create({
   badge: {
     alignSelf: 'flex-start',
-    marginTop: 6,
-    backgroundColor: colors.gold,
-    borderRadius: 4,
+    marginTop: spacing.sm,
+    backgroundColor: colors.gold + '1F',
+    borderRadius: 6,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
-  badgeText: { color: '#1A1300', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 },
+  badgeText: { color: colors.gold, fontSize: 10, fontWeight: '600' },
 });

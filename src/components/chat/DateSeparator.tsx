@@ -1,19 +1,15 @@
 import React, { memo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../../theme';
+import { StyleSheet, Text } from 'react-native';
+import { colors, spacing, type } from '../../theme';
 
 export const DateSeparator = memo(function DateSeparator({ label }: { label: string }) {
   return (
-    <View style={styles.row} accessibilityRole="header">
-      <View style={styles.line} />
-      <Text style={styles.label}>{label}</Text>
-      <View style={styles.line} />
-    </View>
+    <Text style={styles.label} accessibilityRole="header">
+      {label}
+    </Text>
   );
 });
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.xl, marginVertical: spacing.md },
-  line: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
-  label: { color: colors.textMuted, fontSize: 11, fontWeight: '600', marginHorizontal: spacing.md },
+  label: { ...type.micro, fontWeight: '600', color: colors.textMuted, textAlign: 'center', marginVertical: spacing.lg },
 });

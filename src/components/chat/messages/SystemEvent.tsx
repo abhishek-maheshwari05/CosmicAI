@@ -1,24 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing } from '../../../theme';
+import { StyleSheet, Text } from 'react-native';
+import { colors, spacing, type } from '../../../theme';
 import type { MessageRendererProps } from './types';
 
 export function SystemEvent({ message }: MessageRendererProps) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>🪐 {message.text}</Text>
-    </View>
-  );
+  return <Text style={styles.text}>{message.text}</Text>;
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: 6,
-    marginHorizontal: spacing.xl,
-  },
-  text: { color: colors.textMuted, fontSize: 12, textAlign: 'center' },
+  text: { ...type.caption, color: colors.textMuted, textAlign: 'center', marginHorizontal: spacing.xxl },
 });

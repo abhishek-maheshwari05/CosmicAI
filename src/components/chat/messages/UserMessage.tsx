@@ -6,17 +6,19 @@ import { DeliveryStatus } from '../DeliveryStatus';
 import type { MessageRendererProps } from './types';
 
 export function UserMessage({ message, isFirstInGroup, isLastInGroup }: MessageRendererProps) {
+  const failed = message.status === 'failed';
   return (
     <View style={styles.row}>
       <View style={styles.bubbleWrap}>
         <ChatBubble
           message={message}
           align="right"
-          backgroundColor={message.status === 'failed' ? '#5B2333' : colors.userBubble}
+          backgroundColor={failed ? colors.surfaceAlt : colors.userBubble}
           isFirstInGroup={isFirstInGroup}
           isLastInGroup={isLastInGroup}
-          footer={<DeliveryStatus id={message.id} status={message.status} />}
+          footer={message.status && message.status !== 'sent' ? <DeliveryStatus id={message.id} status={message.status} /> : undefined}
         />
+        {message.status === 'sent' && isLastInGroup ? <DeliveryStatus id={message.id} status="sent" /> : null}
       </View>
     </View>
   );
@@ -24,5 +26,5 @@ export function UserMessage({ message, isFirstInGroup, isLastInGroup }: MessageR
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: spacing.lg },
-  bubbleWrap: { maxWidth: '80%' },
+  bubbleWrap: { maxWidth: '78%', alignItems: 'flex-end' },
 });

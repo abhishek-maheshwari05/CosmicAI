@@ -1,77 +1,80 @@
+import Clipboard from '@react-native-clipboard/clipboard';
+import { Copy, ThumbsDown, ThumbsUp } from 'lucide-react-native';
 import React, { memo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useConversationStore } from '../../store/conversationStore';
 import type { Feedback, FeedbackReason } from '../../types/conversation';
-import { colors, radius, spacing } from '../../theme';
-import { PressableScale } from '../common/PressableScale';
+import { colors, radius, spacing, type } from '../../theme';
+import { motion } from '../../theme/motion';
+import { IconButton } from '../common/IconButton';
+import { showToast } from '../dialog/Toast';
 
 const REASONS: { key: FeedbackReason; label: string }[] = [
   { key: 'inaccurate', label: 'Inaccurate' },
-  { key: 'too_generic', label: 'Too Generic' },
-  { key: 'didnt_help', label: 'Didn’t Help' },
-  { key: 'too_long', label: 'Too Long' },
+  { key: 'too_generic', label: 'Too generic' },
+  { key: 'didnt_help', label: 'Didn’t help' },
+  { key: 'too_long', label: 'Too long' },
 ];
 
-export const FeedbackBar = memo(function FeedbackBar({ id, feedback }: { id: string; feedback: Feedback }) {
+export const FeedbackBar = memo(function FeedbackBar({ id, text, feedback }: { id: string; text: string; feedback: Feedback }) {
   const setRating = useConversationStore(s => s.setRating);
   const toggleReason = useConversationStore(s => s.toggleReason);
 
   return (
-    <Animated.View layout={LinearTransition} style={styles.container}>
-      <View style={styles.row}>
-        <Chip label="👍" active={feedback.rating === 'like'} onPress={() => setRating(id, 'like')} a11y="Like" />
-        <Chip label="👎" active={feedback.rating === 'dislike'} onPress={() => setRating(id, 'dislike')} a11y="Dislike" />
-        {feedback.rating === 'like' ? <Text style={styles.thanks}>Thanks for the feedback!</Text> : null}
+    <View>
+      <View style={styles.toolbar}>
+        <IconButton
+          icon={Copy}
+          label="Copy"
+          onPress={() => {
+            Clipboard.setString(text);
+            showToast('Copied to clipboard');
+          }}
+        />
+        <IconButton icon={ThumbsUp} label="Like" active={feedback.rating === 'like'} activeColor={colors.primary} onPress={() => setRating(id, 'like')} />
+        <IconButton icon={ThumbsDown} label="Dislike" active={feedback.rating === 'dislike'} activeColor={colors.primary} onPress={() => setRating(id, 'dislike')} />
+        {feedback.rating === 'like' ? <Text style={styles.thanks}>Thanks for your feedback</Text> : null}
       </View>
       {feedback.rating === 'dislike' ? (
-        <Animated.View entering={FadeInDown} exiting={FadeOut} style={styles.reasons}>
-          <Text style={styles.prompt}>What went wrong?</Text>
+        <Animated.View entering={motion.fadeIn} style={styles.reasons}>
+          <Text style={styles.prompt}>What could be better?</Text>
           <View style={styles.wrap}>
-            {REASONS.map(r => (
-              <Chip
-                key={r.key}
-                label={r.label}
-                active={feedback.reasons.includes(r.key)}
-                onPress={() => toggleReason(id, r.key)}
-              />
-            ))}
+            {REASONS.map(r => {
+              const active = feedback.reasons.includes(r.key);
+              return (
+                <Pressable
+                  key={r.key}
+                  onPress={() => toggleReason(id, r.key)}
+                  style={({ pressed }) => [styles.chip, active && styles.chipActive, pressed && !active && styles.chipPressed]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}>
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{r.label}</Text>
+                </Pressable>
+              );
+            })}
           </View>
         </Animated.View>
       ) : null}
-    </Animated.View>
+    </View>
   );
 });
 
-function Chip({ label, active, onPress, a11y }: { label: string; active: boolean; onPress: () => void; a11y?: string }) {
-  return (
-    <PressableScale
-      onPress={onPress}
-      style={[styles.chip, active && styles.chipActive]}
-      accessibilityRole="button"
-      accessibilityLabel={a11y ?? label}
-      accessibilityState={{ selected: active }}>
-      <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
-    </PressableScale>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: { marginTop: spacing.xs },
-  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  thanks: { color: colors.textMuted, fontSize: 12 },
-  reasons: { marginTop: spacing.sm },
-  prompt: { color: colors.textMuted, fontSize: 12, marginBottom: 6 },
+  toolbar: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  thanks: { ...type.caption, color: colors.textMuted, marginLeft: spacing.sm },
+  reasons: { marginTop: spacing.xs, paddingLeft: spacing.sm },
+  prompt: { ...type.caption, color: colors.textMuted, marginBottom: spacing.sm },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderStrong,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
-    paddingVertical: 5,
-    backgroundColor: colors.surface,
+    paddingVertical: 6,
   },
+  chipPressed: { backgroundColor: colors.surfaceAlt },
   chipActive: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
-  chipText: { color: colors.textMuted, fontSize: 13 },
-  chipTextActive: { color: colors.text },
+  chipText: { ...type.caption, color: colors.textSecondary },
+  chipTextActive: { color: colors.text, fontWeight: '600' },
 });

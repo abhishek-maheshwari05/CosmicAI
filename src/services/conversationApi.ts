@@ -18,7 +18,7 @@ export const mockServerConfig = {
 
 const delay = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
-export const normalizeMessage = (raw: ApiMessage, index: number): Message => ({
+const normalizeMessage = (raw: ApiMessage, index: number): Message => ({
   id: raw.id,
   sender: raw.type,
   text: raw.text,

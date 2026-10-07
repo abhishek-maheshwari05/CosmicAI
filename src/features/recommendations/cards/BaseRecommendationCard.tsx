@@ -1,10 +1,11 @@
+import { ChevronRight } from 'lucide-react-native';
 import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { PressableScale } from '../../../components/common/PressableScale';
-import { colors, radius, spacing } from '../../../theme';
+import { colors, radius, spacing, type } from '../../../theme';
 import type { RecommendationCardProps } from '../types';
 
-export const CARD_WIDTH = 168;
+export const CARD_WIDTH = 196;
 
 /** Default visual for every recommendation type. Specialised cards compose it. */
 export const BaseRecommendationCard = memo(function BaseRecommendationCard({
@@ -13,17 +14,18 @@ export const BaseRecommendationCard = memo(function BaseRecommendationCard({
   onPress,
   children,
 }: RecommendationCardProps & { children?: React.ReactNode }) {
+  const Icon = definition.icon;
   return (
     <PressableScale
       onPress={onPress}
-      style={[styles.card, { borderColor: definition.accent + '55' }]}
+      style={styles.card}
       accessibilityRole="button"
       accessibilityLabel={`${definition.label}: ${item.title}`}>
       <View style={styles.header}>
-        <View style={[styles.iconWrap, { backgroundColor: definition.accent + '26' }]}>
-          <Text style={styles.icon}>{definition.icon}</Text>
+        <View style={[styles.iconTile, { backgroundColor: definition.accent + '1F' }]}>
+          <Icon size={16} color={definition.accent} strokeWidth={2} />
         </View>
-        <Text style={[styles.label, { color: definition.accent }]}>{definition.label.toUpperCase()}</Text>
+        <Text style={styles.label}>{definition.label}</Text>
       </View>
       <Text style={styles.title} numberOfLines={2}>
         {item.title}
@@ -35,7 +37,10 @@ export const BaseRecommendationCard = memo(function BaseRecommendationCard({
       ) : null}
       {children}
       <View style={styles.spacer} />
-      <Text style={[styles.cta, { color: definition.accent }]}>{item.ctaLabel ?? definition.defaultCta} →</Text>
+      <View style={styles.footer}>
+        <Text style={styles.cta}>{item.ctaLabel ?? definition.defaultCta}</Text>
+        <ChevronRight size={16} color={colors.textSecondary} strokeWidth={2} />
+      </View>
     </PressableScale>
   );
 });
@@ -43,18 +48,26 @@ export const BaseRecommendationCard = memo(function BaseRecommendationCard({
 const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
-    minHeight: 150,
+    minHeight: 148,
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    padding: spacing.md,
+    borderColor: colors.border,
+    padding: 14,
   },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm },
-  iconWrap: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
-  icon: { fontSize: 16 },
-  label: { marginLeft: spacing.sm, fontSize: 10, fontWeight: '700', letterSpacing: 1 },
-  title: { color: colors.text, fontSize: 15, fontWeight: '600' },
-  subtitle: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
-  spacer: { flex: 1, minHeight: spacing.sm },
-  cta: { fontSize: 13, fontWeight: '600' },
+  header: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md },
+  iconTile: { width: 30, height: 30, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  label: { ...type.micro, color: colors.textMuted },
+  title: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: colors.text },
+  subtitle: { ...type.caption, color: colors.textMuted, marginTop: 3 },
+  spacer: { flex: 1, minHeight: spacing.md },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderStrong,
+    paddingTop: 10,
+  },
+  cta: { ...type.label, color: colors.text },
 });

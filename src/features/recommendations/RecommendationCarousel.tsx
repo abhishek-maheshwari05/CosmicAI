@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import type { Recommendation } from '../../types/conversation';
 import { spacing } from '../../theme';
+import { ASSISTANT_INSET } from '../../components/chat/messages/layout';
 import { CARD_WIDTH } from './cards/BaseRecommendationCard';
 import { RecommendationRenderer } from './RecommendationRenderer';
 
@@ -29,6 +30,6 @@ export const RecommendationCarousel = memo(function RecommendationCarousel({ ite
 });
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
+  content: { paddingLeft: ASSISTANT_INSET, paddingRight: spacing.lg, paddingVertical: spacing.xs },
   separator: { width: spacing.sm },
 });

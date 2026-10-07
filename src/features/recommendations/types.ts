@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react-native';
 import type { ComponentType } from 'react';
 import type { Recommendation } from '../../types/conversation';
 
@@ -14,11 +15,11 @@ export interface RecommendationCardProps {
 export interface RecommendationDefinition {
   type: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   accent: string;
   defaultCta: string;
   /** Optional bespoke renderer; defaults to the shared BaseRecommendationCard. */
   Card?: ComponentType<RecommendationCardProps>;
-  /** What happens on tap — navigate, open a sheet, deeplink... Alert for now. */
+  /** What happens on tap — navigate, open a sheet, deeplink... Themed dialog for now. */
   onPress: (item: Recommendation) => void;
 }

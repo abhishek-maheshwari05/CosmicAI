@@ -1,8 +1,11 @@
+import { X } from 'lucide-react-native';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useConversationStore, useMessage } from '../../store/conversationStore';
-import { colors, spacing } from '../../theme';
+import { colors, spacing, type } from '../../theme';
+import { motion } from '../../theme/motion';
+import { IconButton } from '../common/IconButton';
 import { senderLabel } from './senderMeta';
 
 export function ReplyPreview({ messageId }: { messageId: string }) {
@@ -10,7 +13,7 @@ export function ReplyPreview({ messageId }: { messageId: string }) {
   const clear = useConversationStore(s => s.setReplyingTo);
   if (!message) return null;
   return (
-    <Animated.View entering={FadeInDown.duration(200)} exiting={FadeOutDown.duration(150)} style={styles.container}>
+    <Animated.View entering={motion.fadeIn} style={styles.container}>
       <View style={styles.bar} />
       <View style={styles.body}>
         <Text style={styles.title}>Replying to {senderLabel(message)}</Text>
@@ -18,9 +21,7 @@ export function ReplyPreview({ messageId }: { messageId: string }) {
           {message.text}
         </Text>
       </View>
-      <Pressable onPress={() => clear(null)} hitSlop={10} accessibilityLabel="Cancel reply">
-        <Text style={styles.close}>✕</Text>
-      </Pressable>
+      <IconButton icon={X} label="Cancel reply" onPress={() => clear(null)} />
     </Animated.View>
   );
 }
@@ -29,15 +30,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.surface,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
+    marginHorizontal: spacing.sm,
+    marginTop: spacing.sm,
+    paddingLeft: spacing.sm,
+    paddingVertical: spacing.xs,
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: 14,
   },
-  bar: { width: 3, alignSelf: 'stretch', backgroundColor: colors.gold, borderRadius: 2, marginRight: spacing.sm },
+  bar: { width: 2, alignSelf: 'stretch', backgroundColor: colors.primary, borderRadius: 1, marginRight: spacing.sm },
   body: { flex: 1 },
-  title: { color: colors.gold, fontSize: 12, fontWeight: '600' },
-  text: { color: colors.textMuted, fontSize: 13 },
-  close: { color: colors.textMuted, fontSize: 16, paddingLeft: spacing.md },
+  title: { ...type.micro, fontWeight: '600', color: colors.primary },
+  text: { ...type.caption, color: colors.textSecondary, marginTop: 1 },
 });

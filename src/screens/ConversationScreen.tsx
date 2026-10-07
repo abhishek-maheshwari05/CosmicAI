@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { ChatHeader } from '../components/chat/ChatHeader';
 import { Composer } from '../components/chat/Composer';
 import { MessageActionSheet } from '../components/chat/MessageActionSheet';
 import { MessageActionsContext } from '../components/chat/MessageActionsContext';
 import { MessageList } from '../components/chat/MessageList';
+import { showDialog } from '../components/dialog/dialogStore';
 import { EmptyState, ErrorState, LoadingState } from '../components/states/StateView';
-import type { RootStackParamList } from '../navigation/types';
 import { mockServerConfig, type LoadScenario } from '../services/conversationApi';
 import { useConversationStore } from '../store/conversationStore';
 import { colors } from '../theme';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Conversation'>;
-
-export function ConversationScreen({ navigation }: Props) {
+export function ConversationScreen() {
   const loadState = useConversationStore(s => s.loadState);
   const isEmpty = useConversationStore(s => s.ids.length === 0);
   const load = useConversationStore(s => s.load);
@@ -28,23 +26,18 @@ export function ConversationScreen({ navigation }: Props) {
       mockServerConfig.loadScenario = scenario;
       load();
     };
-    Alert.alert('Simulate', 'Reload the conversation with a mock server scenario.', [
-      { text: 'Success', onPress: () => run('success') },
-      { text: 'Empty conversation', onPress: () => run('empty') },
-      { text: 'Network failure', onPress: () => run('error') },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
-  }, [load]);
+    showDialog({
+      title: 'Simulate server response',
+      message: 'Reload the conversation using a mock scenario.',
+      actions: [
+        { text: 'Success', onPress: () => run('success') },
+        { text: 'Empty conversation', style: 'cancel', onPress: () => run('empty') },
+        { text: 'Network failure', style: 'cancel', onPress: () => run('error') },
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Pressable onPress={openSimulator} hitSlop={12} accessibilityLabel="Simulation options">
-          <Text style={styles.headerAction}>⋯</Text>
-        </Pressable>
-      ),
+        { text: 'Cancel', style: 'cancel' },
+      ],
     });
-  }, [navigation, openSimulator]);
+  }, [load]);
 
   const actions = useMemo(() => ({ openActions: setActionTargetId }), []);
 
@@ -55,13 +48,13 @@ export function ConversationScreen({ navigation }: Props) {
 
   return (
     <MessageActionsContext.Provider value={actions}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
-        <View style={styles.body}>{body}</View>
-        {loadState === 'ready' ? <Composer /> : null}
-      </KeyboardAvoidingView>
+      <View style={styles.container}>
+        <ChatHeader onMenu={openSimulator} />
+        <KeyboardAvoidingView style={styles.body} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.body}>{body}</View>
+          {loadState === 'ready' ? <Composer /> : null}
+        </KeyboardAvoidingView>
+      </View>
       <MessageActionSheet messageId={actionTargetId} onClose={() => setActionTargetId(null)} />
     </MessageActionsContext.Provider>
   );
@@ -70,5 +63,4 @@ export function ConversationScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   body: { flex: 1 },
-  headerAction: { color: colors.text, fontSize: 24, paddingHorizontal: 4 },
 });

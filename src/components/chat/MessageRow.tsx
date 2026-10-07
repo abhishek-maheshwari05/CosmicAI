@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useMessage } from '../../store/conversationStore';
 import { spacing } from '../../theme';
+import { motion } from '../../theme/motion';
 import { messageRenderers } from './messages';
 
 interface Props {
@@ -11,9 +12,13 @@ interface Props {
   isLastInGroup: boolean;
 }
 
+/** Only messages that arrived moments ago get an entrance animation. */
+const FRESH_MS = 2000;
+
 /**
  * Subscribes to a single message by id, so state changes to other messages
- * never re-render this row.
+ * never re-render this row. Rows are recycled by the virtualised list, so an
+ * unconditional `entering` would replay on every scroll and flicker.
  */
 export const MessageRow = memo(function MessageRow({ id, isFirstInGroup, isLastInGroup }: Props) {
   const message = useMessage(id);
@@ -21,8 +26,7 @@ export const MessageRow = memo(function MessageRow({ id, isFirstInGroup, isLastI
   const Renderer = messageRenderers[message.sender];
   return (
     <Animated.View
-      entering={FadeInDown.duration(250)}
-      exiting={FadeOut.duration(150)}
+      entering={Date.now() - message.createdAt < FRESH_MS ? motion.rise : undefined}
       style={isLastInGroup ? styles.groupEnd : styles.grouped}>
       <Renderer message={message} isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} />
     </Animated.View>
@@ -30,6 +34,7 @@ export const MessageRow = memo(function MessageRow({ id, isFirstInGroup, isLastI
 });
 
 const styles = StyleSheet.create({
-  grouped: { marginBottom: 2 },
-  groupEnd: { marginBottom: spacing.md },
+  grouped: { marginBottom: 3 },
+  groupEnd: { marginBottom: spacing.lg },
 });
+

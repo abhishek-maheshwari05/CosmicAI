@@ -1,19 +1,23 @@
+import { BadgeCheck } from 'lucide-react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../../../theme';
+import { colors, spacing, type } from '../../../theme';
 import { Avatar, AvatarSpacer } from '../../common/Avatar';
 import { ChatBubble } from '../ChatBubble';
 import type { MessageRendererProps } from './types';
 
 export function HumanMessage({ message, isFirstInGroup, isLastInGroup }: MessageRendererProps) {
+  const name = message.authorName ?? 'Astrologer';
   return (
     <View style={styles.row}>
-      {isLastInGroup ? <Avatar emoji="👨‍🏫" color="#13324A" /> : <AvatarSpacer />}
+      {isLastInGroup ? <Avatar name={name} color={colors.human} /> : <AvatarSpacer />}
       <View style={styles.content}>
         {isFirstInGroup ? (
-          <Text style={styles.name}>
-            {message.authorName ?? 'Astrologer'} <Text style={styles.badge}> · Verified Astrologer</Text>
-          </Text>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{name}</Text>
+            <BadgeCheck size={13} color={colors.human} strokeWidth={2.2} />
+            <Text style={styles.role}>Astrologer</Text>
+          </View>
         ) : null}
         <ChatBubble
           message={message}
@@ -29,7 +33,8 @@ export function HumanMessage({ message, isFirstInGroup, isLastInGroup }: Message
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: spacing.lg, gap: spacing.sm },
-  content: { maxWidth: '80%' },
-  name: { color: colors.human, fontSize: 12, fontWeight: '600', marginBottom: 4, marginLeft: 4 },
-  badge: { color: colors.textMuted, fontWeight: '400' },
+  content: { maxWidth: '78%' },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4, marginLeft: 2 },
+  name: { ...type.label, color: colors.text },
+  role: { ...type.micro, color: colors.textMuted, marginLeft: 2 },
 });

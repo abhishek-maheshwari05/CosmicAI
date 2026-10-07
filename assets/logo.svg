@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#2A1F5A"/>
+      <stop offset="100%" stop-color="#07061A"/>
+    </radialGradient>
+    <radialGradient id="orb" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#3B1F9A"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="55%" stop-color="#8B5CF6" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="crescent">
+      <circle cx="500" cy="530" r="170" fill="#fff"/>
+      <circle cx="575" cy="470" r="160" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <g fill="#fff">
+    <circle cx="160" cy="180" r="5" opacity=".8"/><circle cx="860" cy="150" r="4" opacity=".6"/>
+    <circle cx="120" cy="760" r="4" opacity=".5"/><circle cx="900" cy="820" r="6" opacity=".7"/>
+    <circle cx="780" cy="300" r="3" opacity=".6"/><circle cx="250" cy="880" r="3" opacity=".6"/>
+    <circle cx="300" cy="120" r="3" fill="#F5C451"/><circle cx="820" cy="640" r="4" fill="#F5C451"/>
+  </g>
+  <circle cx="512" cy="512" r="400" fill="url(#halo)"/>
+  <circle cx="512" cy="512" r="300" fill="url(#orb)" stroke="#A78BFA" stroke-width="6"/>
+  <rect width="1024" height="1024" fill="#F5C451" mask="url(#crescent)"/>
+  <path d="M650 330 L664 376 L710 390 L664 404 L650 450 L636 404 L590 390 L636 376 Z" fill="#FFF6D6"/>
+  <g transform="rotate(-20 512 512)">
+    <ellipse cx="512" cy="512" rx="430" ry="150" fill="none" stroke="#F5C451" stroke-width="12" stroke-opacity=".75"
+      stroke-dasharray="1700 260" stroke-dashoffset="-120"/>
+    <circle cx="912" cy="460" r="38" fill="#F5C451"/>
+  </g>
+</svg>
